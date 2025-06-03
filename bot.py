@@ -18,14 +18,13 @@ from pipecat.pipeline.runner import PipelineRunner
 from pipecat.pipeline.task import PipelineParams, PipelineTask
 from pipecat.processors.aggregators.openai_llm_context import OpenAILLMContext
 from pipecat.serializers.plivo import PlivoFrameSerializer
-from pipecat.services.cartesia import CartesiaTTSService
+from pipecat.services.cartesia.tts import CartesiaTTSService
 from pipecat.services.deepgram.stt import DeepgramSTTService
-from pipecat.services.openai import OpenAILLMService
+from pipecat.services.openai.llm import OpenAILLMService
 from pipecat.transports.network.fastapi_websocket import (
     FastAPIWebsocketParams,
     FastAPIWebsocketTransport,
 )
-from config import get_config
 
 load_dotenv()
 logger.remove(0)
@@ -80,26 +79,22 @@ async def run_bot(websocket_client: WebSocket, stream_id: str, call_id: Optional
 
     logger.info("🗣️ Initializing Cartesia TTS...")
     cartesia_key = os.getenv("CARTESIA_API_KEY")
-    config = get_config()
-    voice_id = config.get_voice_id()
     logger.info(f"🔑 Cartesia key: {'*' * (len(cartesia_key) - 4) + cartesia_key[-4:] if cartesia_key else 'NOT SET'}")
-    logger.info(f"🎵 Using voice ID: {voice_id}")
     tts = CartesiaTTSService(
         api_key=cartesia_key,
-        voice_id=voice_id,
+        voice_id="71a7ad14-091c-4e8e-a314-022ece01c121",  # British Reading Lady
     )
-    logger.info("✅ Cartesia TTS initialized with configured voice")
+    logger.info("✅ Cartesia TTS initialized with British Reading Lady voice")
 
     # Set up conversation context
     logger.info("📚 Setting up AI conversation context...")
-    system_prompt = config.get_system_prompt()
     messages = [
         {
             "role": "system",
-            "content": system_prompt,
+            "content": "You are a friendly elementary teacher in India having an audio call. Your output will be converted to audio so don't include special characters in your answers. Respond to what the student said in a short sentence. Be encouraging and educational. Speak clearly and simply.",
         },
     ]
-    logger.info(f"📝 System message: {system_prompt}")
+    logger.info(f"📝 System message: {messages[0]['content']}")
 
     context = OpenAILLMContext(messages)
     context_aggregator = llm.create_context_aggregator(context)
@@ -123,12 +118,11 @@ async def run_bot(websocket_client: WebSocket, stream_id: str, call_id: Optional
 
     # Create pipeline task
     logger.info("⚙️ Creating pipeline task...")
-    audio_quality = config.get_audio_quality()
     task = PipelineTask(
         pipeline,
         params=PipelineParams(
-            audio_in_sample_rate=audio_quality,
-            audio_out_sample_rate=audio_quality,
+            audio_in_sample_rate=8000,
+            audio_out_sample_rate=8000,
             allow_interruptions=True,
         ),
     )
