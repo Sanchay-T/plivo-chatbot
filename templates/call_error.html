@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Call Failed{% endblock %}
+
+{% block content %}
+<div class="alert alert-error">
+    <h1>❌ Call Failed</h1>
+    <h2>Unable to initiate call to {{ phone }}</h2>
+    
+    <div class="info-box">
+        <h4>📋 Call Details</h4>
+        <ul>
+            <li><strong>📱 Target:</strong> {{ phone }}</li>
+            <li><strong>🆔 Caller ID:</strong> {{ caller_id }}</li>
+            <li><strong>❌ Error:</strong> {{ error }}</li>
+        </ul>
+    </div>
+    
+    <div class="info-box">
+        <h4>🔧 Troubleshooting Steps:</h4>
+        <ul>
+            <li>Check your Plivo credentials in .env file</li>
+            <li>Verify phone number format (+91XXXXXXXXXX)</li>
+            <li>Ensure your Plivo account has sufficient balance</li>
+            <li>Check terminal logs for detailed error information</li>
+            <li>Verify your Plivo number is voice-enabled</li>
+        </ul>
+    </div>
+    
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="/" class="btn btn-primary">← Try Again</a>
+    </div>
+</div>
+{% endblock %} 

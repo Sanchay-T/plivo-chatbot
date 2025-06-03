@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Stream bidirectional="true" keepCallAlive="true" contentType="audio/x-mulaw;rate=8000">wss://f8b5-2401-4900-1c20-2dcd-b9b3-d3aa-8f45-96c8.ngrok-free.app/ws</Stream>
+</Response>

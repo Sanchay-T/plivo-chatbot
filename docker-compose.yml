@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  plivo-chatbot:
+    build: .
+    ports:
+      - "8765:8765"
+    environment:
+      - PLIVO_AUTH_ID=${PLIVO_AUTH_ID}
+      - PLIVO_AUTH_TOKEN=${PLIVO_AUTH_TOKEN}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - DEEPGRAM_API_KEY=${DEEPGRAM_API_KEY}
+      - CARTESIA_API_KEY=${CARTESIA_API_KEY}
+      - SERVER_URL=${SERVER_URL}
+    volumes:
+      - ./data:/plivo-chatbot/data
+      - ./chatbot.log:/plivo-chatbot/chatbot.log
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8765/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3 

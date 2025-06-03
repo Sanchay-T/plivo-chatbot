@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Call Started{% endblock %}
+
+{% block content %}
+<div class="alert alert-success">
+    <h1>🎉 AI Call Started!</h1>
+    <h2>📞 Calling {{ phone }} NOW!</h2>
+    
+    <div class="info-box">
+        <h4>📋 Call Details</h4>
+        <ul>
+            <li><strong>📱 Target:</strong> {{ phone }}</li>
+            <li><strong>🆔 Caller ID:</strong> {{ caller_id }}</li>
+            <li><strong>🎯 Call UUID:</strong> {{ call_uuid }}</li>
+        </ul>
+    </div>
+    
+    <div class="info-box">
+        <h4>🎬 What happens next:</h4>
+        <ol>
+            <li><strong>Your phone rings</strong> - Answer it!</li>
+            <li><strong>AI assistant speaks</strong> - Introduces itself</li>
+            <li><strong>Have a conversation</strong> - The AI will respond naturally</li>
+            <li><strong>Check terminal logs</strong> - Watch the magic happen</li>
+        </ol>
+    </div>
+    
+    <p style="font-size: 1.2rem; font-weight: bold; color: #059669; text-align: center; margin: 20px 0;">
+        🔥 GET READY TO ANSWER YOUR PHONE! 🔥
+    </p>
+    
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="/" class="btn btn-primary">← Make Another Call</a>
+    </div>
+</div>
+{% endblock %} 

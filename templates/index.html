@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}Voice Assistant Configuration{% endblock %}
+
+{% block content %}
+<!-- Navigation Tabs -->
+<div class="tabs">
+    <button class="tab-button active" data-tab="call">📞 Make Call</button>
+    <button class="tab-button" data-tab="settings">⚙️ Configuration</button>
+    <button class="tab-button" data-tab="history">📋 Call History</button>
+</div>
+
+<!-- Call Tab -->
+<div id="call-tab" class="tab-content active">
+    <div class="form-section">
+        <h3>📞 Initiate AI Call</h3>
+        
+        <form id="call-form" action="/make-call" method="post">
+            <div class="form-group">
+                <label for="phone">Target Phone Number</label>
+                <input type="tel" id="phone" name="phone" value="{{ default_target_number }}" required>
+                <small>Format: +91XXXXXXXXXX (with country code)</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="caller_id">Caller ID (Your Plivo Number)</label>
+                <input type="tel" id="caller_id" name="caller_id" value="{{ default_caller_id }}" required>
+                <small>This is your verified Plivo phone number</small>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-large" data-original-text="🚀 Start AI Call">
+                🚀 Start AI Call
+            </button>
+        </form>
+    </div>
+    
+    <div class="info-box">
+        <h4>🎯 How it works:</h4>
+        <ul>
+            <li><strong>Click "Start AI Call"</strong> - The system will call the target number</li>
+            <li><strong>Call is answered</strong> - AI assistant begins conversation</li>
+            <li><strong>Real-time conversation</strong> - Natural voice interaction with AI</li>
+            <li><strong>Configurable personality</strong> - Customize the AI's behavior in settings</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Settings Tab -->
+<div id="settings-tab" class="tab-content">
+    <form id="settings-form">
+        <!-- AI Configuration -->
+        <div class="form-section">
+            <h3>🧠 AI Configuration</h3>
+            
+            <div class="form-group">
+                <label for="system_prompt">System Prompt</label>
+                <div class="preset-prompts">
+                    <div class="preset-prompt" data-prompt="You are a friendly elementary teacher in India having an audio call. Your output will be converted to audio so don't include special characters in your answers. Respond to what the student said in a short sentence. Be encouraging and educational. Speak clearly and simply.">
+                        👩‍🏫 Teacher
+                    </div>
+                    <div class="preset-prompt" data-prompt="You are a professional customer support representative. You are helpful, patient, and solution-oriented. Keep responses concise and clear for audio conversation.">
+                        🎧 Support Agent
+                    </div>
+                    <div class="preset-prompt" data-prompt="You are a friendly sales representative. You are enthusiastic but not pushy. Focus on understanding customer needs and providing value. Keep responses conversational and engaging.">
+                        💼 Sales Rep
+                    </div>
+                    <div class="preset-prompt" data-prompt="You are a personal assistant. You are organized, efficient, and helpful. Provide clear and actionable responses. Be professional yet friendly in your communication.">
+                        📋 Assistant
+                    </div>
+                </div>
+                <textarea id="system_prompt" name="system_prompt" placeholder="Enter your custom system prompt here..."></textarea>
+                <small>Define how the AI should behave during conversations</small>
+            </div>
+        </div>
+        
+        <!-- Voice Configuration -->
+        <div class="form-section">
+            <h3>🗣️ Voice Configuration</h3>
+            
+            <div class="form-group">
+                <label for="voice_id">Voice Selection</label>
+                <select id="voice_id" name="voice_id">
+                    <option value="71a7ad14-091c-4e8e-a314-022ece01c121">British Reading Lady (Default)</option>
+                    <option value="a0e99841-438c-4a64-b679-ae501e7d6091">Conversational Female</option>
+                    <option value="79a125e8-cd45-4c13-8a67-188112f4dd22">Professional Male</option>
+                    <option value="87748186-23bb-4158-a1eb-332911b0b708">Friendly Female</option>
+                    <option value="41534e16-2966-4c6b-9670-111411def906">Calm Male</option>
+                    <option value="b7d50908-b17c-442d-ad8d-810c63997ed9">Energetic Female</option>
+                    <option value="custom">Custom Voice ID</option>
+                </select>
+                <small>Choose the voice personality for your AI assistant</small>
+            </div>
+            
+            <div class="form-group" id="custom-voice-group" style="display: none;">
+                <label for="custom_voice_id">Custom Voice ID</label>
+                <input type="text" id="custom_voice_id" name="custom_voice_id" placeholder="Enter Cartesia voice ID">
+                <small>Enter a custom Cartesia voice ID</small>
+            </div>
+            
+            <div class="voice-preview">
+                <button type="button" id="voice-preview" class="btn btn-secondary">🎵 Preview Voice</button>
+                <small>Test how the selected voice sounds</small>
+            </div>
+        </div>
+        
+        <!-- Call Settings -->
+        <div class="form-section">
+            <h3>📞 Call Settings</h3>
+            
+            <div class="form-group">
+                <label for="default_caller_id">Default Caller ID</label>
+                <input type="tel" id="default_caller_id" name="default_caller_id" value="{{ default_caller_id }}">
+                <small>Your default Plivo phone number</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="default_target_number">Default Target Number</label>
+                <input type="tel" id="default_target_number" name="default_target_number" value="{{ default_target_number }}">
+                <small>Default number to call (for testing)</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="audio_quality">Audio Quality</label>
+                <select id="audio_quality" name="audio_quality">
+                    <option value="8000">Standard (8kHz) - Recommended</option>
+                    <option value="16000">High (16kHz)</option>
+                </select>
+                <small>Higher quality uses more bandwidth</small>
+            </div>
+        </div>
+        
+        <button type="submit" class="btn btn-success btn-large">💾 Save Configuration</button>
+    </form>
+</div>
+
+<!-- History Tab -->
+<div id="history-tab" class="tab-content">
+    <div class="form-section">
+        <h3>📋 Call History</h3>
+        
+        <div class="call-history">
+            <h4>Recent Calls</h4>
+            <div id="call-history-list">
+                <div class="call-entry">
+                    <div class="call-info">
+                        <strong>+919136820958</strong>
+                        <div class="call-time">No calls yet</div>
+                    </div>
+                    <div class="status-indicator status-pending"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h4>📊 Call Statistics</h4>
+            <ul>
+                <li><strong>Total Calls:</strong> <span id="total-calls">0</span></li>
+                <li><strong>Successful Calls:</strong> <span id="successful-calls">0</span></li>
+                <li><strong>Average Duration:</strong> <span id="avg-duration">0 min</span></li>
+                <li><strong>Last Call:</strong> <span id="last-call">Never</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Handle custom voice ID visibility
+document.getElementById('voice_id').addEventListener('change', function() {
+    const customGroup = document.getElementById('custom-voice-group');
+    if (this.value === 'custom') {
+        customGroup.style.display = 'block';
+    } else {
+        customGroup.style.display = 'none';
+    }
+});
+
+// Store original button text for loading states
+document.querySelectorAll('button[data-original-text]').forEach(button => {
+    button.dataset.originalText = button.textContent;
+});
+</script>
+{% endblock %} 
